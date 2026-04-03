@@ -81,7 +81,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="http://localhost:8080/" class="text-sm text-white hover:text-white/80 mr-6">Back to site</a>
+                        <a href="/" class="text-sm text-white hover:text-white/80 mr-6">Back to site</a>
                         <div class="flex-shrink-0 flex items-center">
                             <i class="fa fa-credit-card text-white text-2xl mr-2"></i>
                             <span class="text-xl font-bold text-white">Evonet Drop-in</span>
@@ -147,14 +147,14 @@
                                     <div class="grid grid-cols-2 gap-4">
                                         <div>
                                             <label for="amountInput" class="block text-sm font-medium text-gray-700 mb-2">支付金额</label>
-                                            <input type="number" id="amountInput" name="amountInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入金额" step="0.01" min="0.01" required>
+                                            <input type="number" id="amountInput" name="amountInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入金�? step="0.01" min="0.01" required>
                                         </div>
                                         <div>
                                             <label for="currencySelect" class="block text-sm font-medium text-gray-700 mb-2">货币</label>
                                             <select id="currencySelect" name="currencySelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
                                                 <option value="USD">USD - 美元</option>
                                                 <option value="HKD">HKD - 港币</option>
-                                                <option value="CNY">CNY - 人民币</option>
+                                                <option value="CNY">CNY - 人民�?/option>
                                             </select>
                                         </div>
                                     </div>
@@ -195,7 +195,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="mb-4 md:mb-0">
-                        <p class="text-sm text-white">© 2026 Evonet Drop-in Demo. 保留所有权利。</p>
+                        <p class="text-sm text-white">© 2026 Evonet Drop-in Demo. 保留所有权利�?/p>
                     </div>
                 </div>
             </div>
@@ -323,7 +323,7 @@
         
         function handlePaymentCancelled(params) {
             console.log('Payment cancelled:', params);
-            alert('支付已取消');
+            alert('支付已取�?);
             document.getElementById('paymentPlaceholder').classList.remove('hidden');
             document.getElementById('paymentButtonContainer').classList.remove('hidden');
             document.getElementById('dropInApp').classList.add('hidden');
@@ -362,7 +362,7 @@
             
             const payBtn = document.getElementById('payBtn');
             payBtn.disabled = true;
-            payBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 加载中...';
+            payBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 加载�?..';
             
             const existingSessionId = document.getElementById('sessionId').value;
             if (existingSessionId) {

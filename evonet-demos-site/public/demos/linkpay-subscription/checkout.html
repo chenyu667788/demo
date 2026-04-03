@@ -37,7 +37,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="http://localhost:8080/" class="flex-shrink-0 flex items-center text-white/90 hover:text-white mr-6">
+                        <a href="/" class="flex-shrink-0 flex items-center text-white/90 hover:text-white mr-6">
                             <span class="text-sm font-medium">Back to Site</span>
                         </a>
                         <div class="flex-shrink-0 flex items-center border-l border-white/30 pl-6">
@@ -66,8 +66,7 @@
                     <div class="bg-white rounded-lg card-shadow p-8">
                         <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
                             <i class="fa fa-list-alt text-primary mr-3"></i>
-                            已选方案
-                        </h2>
+                            已选方�?                        </h2>
                         <div id="selectedPlanInfo">
                             <div class="animate-pulse space-y-4">
                                 <div class="h-4 bg-gray-200 rounded w-3/4"></div>
@@ -86,19 +85,19 @@
                                 <label for="customerName" class="block text-sm font-medium text-gray-700 mb-1">姓名 <span class="text-red-500">*</span></label>
                                 <input type="text" id="customerName" name="customerName" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    placeholder="请输入您的姓名">
+                                    placeholder="请输入您的姓�?>
                             </div>
                             <div>
                                 <label for="customerEmail" class="block text-sm font-medium text-gray-700 mb-1">邮箱 <span class="text-red-500">*</span></label>
                                 <input type="email" id="customerEmail" name="customerEmail" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    placeholder="请输入您的邮箱">
+                                    placeholder="请输入您的邮�?>
                             </div>
                             <div>
                                 <label for="customerPhone" class="block text-sm font-medium text-gray-700 mb-1">手机号码</label>
                                 <input type="tel" id="customerPhone" name="customerPhone"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                    placeholder="请输入您的手机号码">
+                                    placeholder="请输入您的手机号�?>
                             </div>
                         </form>
                     </div>
@@ -126,8 +125,7 @@
                     <ul class="space-y-2 text-sm text-gray-600">
                         <li class="flex items-start">
                             <i class="fa fa-check text-secondary mr-2 mt-0.5"></i>
-                            首次订阅时请在支付页面勾选"Save card details for next time"以保存卡片信息
-                        </li>
+                            首次订阅时请在支付页面勾�?Save card details for next time"以保存卡片信�?                        </li>
                         <li class="flex items-start">
                             <i class="fa fa-check text-secondary mr-2 mt-0.5"></i>
                             保存卡片后将支持自动续费功能
@@ -144,7 +142,7 @@
                         <input type="checkbox" id="agreeTerms" name="agreeTerms"
                             class="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
                         <span class="ml-3 text-sm text-gray-600">
-                            我已阅读并同意 <a href="#" class="text-primary hover:underline">隐私政策</a> 和 <a href="#" class="text-primary hover:underline">服务条款</a>
+                            我已阅读并同�?<a href="#" class="text-primary hover:underline">隐私政策</a> �?<a href="#" class="text-primary hover:underline">服务条款</a>
                         </span>
                     </label>
                 </div>
@@ -163,7 +161,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="mb-4 md:mb-0">
-                        <p class="text-sm text-white/80">© 2026 LinkPay Subscription Demo. 保留所有权利。</p>
+                        <p class="text-sm text-white/80">© 2026 LinkPay Subscription Demo. 保留所有权利�?/p>
                     </div>
                     <div class="flex space-x-6">
                         <a href="#" class="text-sm text-white/80 hover:text-white">隐私政策</a>
@@ -221,14 +219,14 @@
                             <h3 class="text-xl font-bold text-gray-900">${selectedPlan.name}</h3>
                             <p class="text-sm text-neutral mt-1">${selectedPlan.description}</p>
                         </div>
-                        ${selectedPlan.popular ? '<span class="bg-primary text-white text-xs font-bold px-2 py-1 rounded">最受欢迎</span>' : ''}
+                        ${selectedPlan.popular ? '<span class="bg-primary text-white text-xs font-bold px-2 py-1 rounded">最受欢�?/span>' : ''}
                     </div>
                 </div>
                 <div class="mb-4">
-                    <p class="text-3xl font-bold text-primary">$${selectedPlan.price}<span class="text-base font-normal text-neutral">/${selectedPlan.billingCycle === 'monthly' ? '月' : '年'}</span></p>
+                    <p class="text-3xl font-bold text-primary">$${selectedPlan.price}<span class="text-base font-normal text-neutral">/${selectedPlan.billingCycle === 'monthly' ? '�? : '�?}</span></p>
                 </div>
                 <div>
-                    <h4 class="text-sm font-medium text-gray-700 mb-2">方案包含：</h4>
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">方案包含�?/h4>
                     <ul class="space-y-2">
                         ${selectedPlan.features.map(f => `
                             <li class="flex items-center text-sm text-gray-600">
@@ -281,7 +279,7 @@
             
             const btn = this;
             btn.disabled = true;
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>处理中...';
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>处理�?..';
             
             try {
                 const response = await fetch('/api/subscription/create', {
