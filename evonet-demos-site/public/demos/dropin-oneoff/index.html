@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evonet Drop-in 支付演示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'rgb(2, 117, 221)',
+                        secondary: '#10B981',
+                        neutral: '#6B7280',
+                        'neutral-light': '#F3F4F6',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .card-shadow {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+        }
+    </style>
+    <script>
+        (function() {
+            window.sdkLoaded = false;
+            var cdnUrls = [
+                'https://cdn.jsdelivr.net/npm/cil-dropin-components@latest/dist/index.min.js',
+                'https://unpkg.com/cil-dropin-components@latest/dist/index.min.js'
+            ];
+            var currentUrlIndex = 0;
+            
+            function loadSDK(url) {
+                console.log('Loading Drop-in SDK from:', url);
+                var script = document.createElement('script');
+                script.src = url;
+                script.onload = function() {
+                    console.log('Drop-in SDK loaded successfully from:', url);
+                    window.sdkLoaded = true;
+                    console.log('SDK loaded, checking available objects:', {
+                        CILDropin: typeof CILDropin !== 'undefined',
+                        DropInSDK: typeof DropInSDK !== 'undefined',
+                        cil: typeof cil !== 'undefined',
+                        evonet: typeof evonet !== 'undefined'
+                    });
+                };
+                script.onerror = function() {
+                    console.error('Failed to load Drop-in SDK from:', url);
+                    currentUrlIndex++;
+                    if (currentUrlIndex < cdnUrls.length) {
+                        loadSDK(cdnUrls[currentUrlIndex]);
+                    } else {
+                        console.error('All CDN URLs failed');
+                        window.sdkLoaded = false;
+                    }
+                };
+                setTimeout(function() {
+                    if (!window.sdkLoaded) {
+                        console.error('SDK loading timed out for:', url);
+                        script.onerror();
+                    }
+                }, 10000);
+                document.head.appendChild(script);
+            }
+            loadSDK(cdnUrls[0]);
+        })();
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex flex-col">
+        <header class="bg-[rgb(2,117,221)] border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="http://localhost:8080/" class="text-sm text-white hover:text-white/80 mr-6">Back to site</a>
+                        <div class="flex-shrink-0 flex items-center">
+                            <i class="fa fa-credit-card text-white text-2xl mr-2"></i>
+                            <span class="text-xl font-bold text-white">Evonet Drop-in</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <a href="https://evonetglobal.com/zh/contact-us/" target="_blank" class="text-sm font-medium text-white hover:text-white/80">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="bg-white rounded-lg card-shadow overflow-hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
+                        <div class="bg-gray-50 p-8 border-r border-gray-200">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">订单详情</h2>
+                            
+                            <div class="space-y-6">
+                                <div class="bg-white rounded-lg p-6 shadow-sm">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">订单信息</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">订单编号:</span>
+                                            <span id="displayOrderId" class="font-medium text-gray-900">-</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">创建时间:</span>
+                                            <span id="displayOrderTime" class="font-medium text-gray-900">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-white rounded-lg p-6 shadow-sm">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">价格详情</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between">
+                                            <span class="text-gray-600">商品金额:</span>
+                                            <span id="displayAmount" class="font-medium text-gray-900">-</span>
+                                        </div>
+                                        <div class="border-t border-gray-200 pt-3 mt-3">
+                                            <div class="flex justify-between">
+                                                <span class="text-lg font-semibold text-gray-900">订单总额:</span>
+                                                <span id="displayTotal" class="text-lg font-bold text-primary">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-8 flex flex-col">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">支付详情</h2>
+                            
+                            <form id="paymentForm" class="flex-grow flex flex-col">
+                                <input type="hidden" id="orderId" name="orderId" value="">
+                                <input type="hidden" id="sessionId" name="sessionId" value="">
+                                <input type="hidden" id="reference" name="reference" value="test_user">
+                                
+                                <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">订单信息</h3>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="amountInput" class="block text-sm font-medium text-gray-700 mb-2">支付金额</label>
+                                            <input type="number" id="amountInput" name="amountInput" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入金额" step="0.01" min="0.01" required>
+                                        </div>
+                                        <div>
+                                            <label for="currencySelect" class="block text-sm font-medium text-gray-700 mb-2">货币</label>
+                                            <select id="currencySelect" name="currencySelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                                <option value="USD">USD - 美元</option>
+                                                <option value="HKD">HKD - 港币</option>
+                                                <option value="CNY">CNY - 人民币</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <input type="hidden" id="amount" name="amount" value="">
+                                <input type="hidden" id="currency" name="currency" value="USD">
+                                
+                                <div class="flex-grow">
+                                    <div id="paymentPlaceholder" class="border border-gray-300 rounded-lg p-8 min-h-[300px] flex flex-col items-center justify-center">
+                                        <div class="text-center space-y-6">
+                                            <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto">
+                                                <i class="fa fa-shield text-primary text-3xl"></i>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-xl font-semibold text-gray-900 mb-2">安全支付</h3>
+                                                <p class="text-gray-600">您的支付信息将被安全加密处理</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="dropInApp" class="hidden"></div>
+                                    <div id="paymentResult" class="hidden mt-4"></div>
+                                </div>
+                                
+                                <div id="paymentButtonContainer" class="mt-6 pt-6 border-t border-gray-200">
+                                    <button type="submit" id="payBtn" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-4 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center text-lg">
+                                        <i class="fa fa-credit-card mr-2"></i>立即支付
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-[rgb(2,117,221)] py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <p class="text-sm text-white">© 2026 Evonet Drop-in Demo. 保留所有权利。</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let dropinInstance = null;
+        
+        function getSDK() {
+            if (typeof CILDropin !== 'undefined') return CILDropin;
+            if (typeof DropInSDK !== 'undefined') return DropInSDK;
+            if (typeof cil !== 'undefined') return cil;
+            if (typeof evonet !== 'undefined') return evonet;
+            return null;
+        }
+        
+        function checkSDKWithDelay() {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const maxAttempts = 20;
+                const interval = 1000;
+                
+                function check() {
+                    attempts++;
+                    const sdk = getSDK();
+                    console.log('Checking SDK loaded status (attempt ' + attempts + '/' + maxAttempts + '):', sdk !== null);
+                    if (sdk !== null) {
+                        window.sdkLoaded = true;
+                        resolve(true);
+                    } else if (attempts < maxAttempts) {
+                        setTimeout(check, interval);
+                    } else {
+                        console.error('SDK loading timed out after', maxAttempts, 'attempts');
+                        resolve(false);
+                    }
+                }
+                check();
+            });
+        }
+        
+        function initDropinSDK(sessionId) {
+            return new Promise((resolve, reject) => {
+                const SDK = getSDK();
+                if (!SDK) {
+                    reject(new Error('Drop-in SDK not loaded'));
+                    return;
+                }
+                
+                try {
+                    console.log('Initializing SDK with sessionId:', sessionId);
+                    
+                    const sdkConfig = {
+                        id: '#dropInApp',
+                        type: 'payment',
+                        sessionID: sessionId,
+                        locale: 'zh-CN',
+                        mode: 'embedded',
+                        environment: 'UAT',
+                        appearance: { colorBackground: '#fff' },
+                        payment_completed: function(params) {
+                            console.log('Payment completed:', params);
+                            handlePaymentCompleted(params);
+                        },
+                        payment_failed: function(params) {
+                            console.log('Payment failed:', params);
+                            handlePaymentFailed(params);
+                        },
+                        payment_cancelled: function(params) {
+                            console.log('Payment cancelled:', params);
+                            handlePaymentCancelled(params);
+                        }
+                    };
+                    
+                    let sdk;
+                    if (typeof SDK.create === 'function') {
+                        sdk = SDK.create(sdkConfig);
+                    } else if (typeof SDK.init === 'function') {
+                        sdk = SDK.init(sdkConfig);
+                    } else {
+                        sdk = new SDK(sdkConfig);
+                    }
+                    
+                    console.log('SDK instance created:', sdk);
+                    resolve(sdk);
+                } catch (error) {
+                    console.error('Error initializing SDK:', error);
+                    reject(error);
+                }
+            });
+        }
+        
+        function handlePaymentCompleted(params) {
+            console.log('Payment completed:', params);
+            if (params.merchantTransID) {
+                console.log('Transaction ID:', params.merchantTransID);
+            }
+            
+            if (params.action) {
+                if (params.action.redirectData && params.action.redirectData.url) {
+                    window.location.href = params.action.redirectData.url;
+                    return;
+                }
+                if (params.action.threeDSData && params.action.threeDSData.url) {
+                    window.location.href = params.action.threeDSData.url;
+                    return;
+                }
+            }
+            
+            const redirectUrl = params.redirectUrl || params.redirect_url || params.url || params.linkUrl;
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else {
+                window.location.href = '/demos/dropin-oneoff/success.html';
+            }
+        }
+        
+        function handlePaymentFailed(params) {
+            console.error('Payment failed:', params);
+            alert('支付失败: ' + (params.message || '未知错误'));
+            document.getElementById('paymentPlaceholder').classList.remove('hidden');
+            document.getElementById('paymentButtonContainer').classList.remove('hidden');
+            document.getElementById('dropInApp').classList.add('hidden');
+        }
+        
+        function handlePaymentCancelled(params) {
+            console.log('Payment cancelled:', params);
+            alert('支付已取消');
+            document.getElementById('paymentPlaceholder').classList.remove('hidden');
+            document.getElementById('paymentButtonContainer').classList.remove('hidden');
+            document.getElementById('dropInApp').classList.add('hidden');
+        }
+        
+        function updateOrderDetails(orderId, amount, currency) {
+            const now = new Date();
+            const orderTime = now.toLocaleString('zh-CN');
+            
+            document.getElementById('displayOrderId').textContent = orderId;
+            document.getElementById('displayOrderTime').textContent = orderTime;
+            
+            const currencySymbol = currency === 'USD' ? '$' : currency === 'HKD' ? 'HK$' : '¥';
+            const formattedAmount = currencySymbol + parseFloat(amount).toFixed(2);
+            
+            document.getElementById('displayAmount').textContent = formattedAmount;
+            document.getElementById('displayTotal').textContent = formattedAmount;
+        }
+        
+        function embedPaymentIframe(linkUrl) {
+            console.log('Embedding payment iframe with URL:', linkUrl);
+            const container = document.getElementById('dropInApp');
+            container.innerHTML = '';
+            const iframe = document.createElement('iframe');
+            iframe.src = linkUrl;
+            iframe.width = '100%';
+            iframe.height = '500px';
+            iframe.frameBorder = '0';
+            iframe.allowFullscreen = true;
+            iframe.style.borderRadius = '8px';
+            container.appendChild(iframe);
+        }
+        
+        async function initDropin() {
+            console.log('Initializing Drop-in...');
+            
+            const payBtn = document.getElementById('payBtn');
+            payBtn.disabled = true;
+            payBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 加载中...';
+            
+            const existingSessionId = document.getElementById('sessionId').value;
+            if (existingSessionId) {
+                payBtn.disabled = false;
+                payBtn.innerHTML = '<i class="fa fa-credit-card mr-2"></i> 立即支付';
+                return;
+            }
+            
+            let orderId = document.getElementById('orderId').value;
+            const amountInput = document.getElementById('amountInput').value;
+            const currencySelect = document.getElementById('currencySelect').value;
+            
+            if (!amountInput || parseFloat(amountInput) <= 0) {
+                alert('请输入有效的支付金额');
+                payBtn.disabled = false;
+                payBtn.innerHTML = '<i class="fa fa-credit-card mr-2"></i> 立即支付';
+                return;
+            }
+            
+            const amount = parseFloat(amountInput).toFixed(2);
+            const currency = currencySelect;
+            
+            document.getElementById('amount').value = amount;
+            document.getElementById('currency').value = currency;
+            
+            if (!orderId) {
+                orderId = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 10000) + '-' + Math.random().toString(36).substr(2, 9);
+                document.getElementById('orderId').value = orderId;
+            }
+            
+            try {
+                updateOrderDetails(orderId, amount, currency);
+                
+                const response = await fetch('/api/create-dropin-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId: orderId,
+                        amount: amount,
+                        currency: currency,
+                        reference: document.getElementById('reference').value
+                    })
+                });
+                
+                const data = await response.json();
+                console.log('API response:', data);
+                
+                if (data.success) {
+                    document.getElementById('sessionId').value = data.sessionId;
+                    document.getElementById('paymentPlaceholder').classList.add('hidden');
+                    document.getElementById('paymentButtonContainer').classList.add('hidden');
+                    document.getElementById('dropInApp').classList.remove('hidden');
+                    
+                    const sdkLoaded = await checkSDKWithDelay();
+                    
+                    if (sdkLoaded) {
+                        try {
+                            const dropin = await initDropinSDK(data.sessionId);
+                            console.log('Drop-in SDK initialized:', dropin);
+                            dropinInstance = dropin;
+                        } catch (sdkError) {
+                            console.error('SDK init failed, using iframe:', sdkError);
+                            if (data.linkUrl) {
+                                embedPaymentIframe(data.linkUrl);
+                            }
+                        }
+                    } else {
+                        console.warn('SDK not loaded, using iframe');
+                        if (data.linkUrl) {
+                            embedPaymentIframe(data.linkUrl);
+                        }
+                    }
+                } else {
+                    throw new Error('Failed to create session: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('创建支付会话失败: ' + error.message);
+                document.getElementById('paymentPlaceholder').classList.remove('hidden');
+                document.getElementById('paymentButtonContainer').classList.remove('hidden');
+                document.getElementById('dropInApp').classList.add('hidden');
+            } finally {
+                payBtn.disabled = false;
+                payBtn.innerHTML = '<i class="fa fa-credit-card mr-2"></i> 立即支付';
+            }
+        }
+        
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('paymentForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                initDropin();
+            });
+        });
+    </script>
+</body>
+</html>

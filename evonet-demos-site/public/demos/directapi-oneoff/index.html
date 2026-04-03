@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct API 支付演示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'rgb(2, 117, 221)',
+                        secondary: '#10B981',
+                        neutral: '#6B7280',
+                    },
+                },
+            }
+        }
+    </script>
+    <style>.card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }</style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex flex-col">
+        <header class="bg-[rgb(2,117,221)] border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="http://localhost:8080/" class="text-sm text-white hover:text-white/80 mr-6">Back to site</a>
+                        <div class="flex-shrink-0 flex items-center">
+                            <i class="fa fa-credit-card text-white text-2xl mr-2"></i>
+                            <span class="text-xl font-bold text-white">Evonet Direct API</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <a href="https://evonetglobal.com/zh/contact-us/" target="_blank" class="text-sm font-medium text-white hover:text-white/80">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="bg-white rounded-lg card-shadow overflow-hidden">
+                    <div class="p-8">
+                        <h1 class="text-2xl font-bold text-gray-900 mb-6">Direct API 支付演示</h1>
+                        
+                        <form id="paymentForm" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">支付金额</label>
+                                    <input type="number" id="amount" name="amount" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" value="100" step="0.01" placeholder="支付金额">
+                                </div>
+                                <div>
+                                    <label for="currency" class="block text-sm font-medium text-gray-700 mb-1">货币</label>
+                                    <select id="currency" name="currency" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="USD">USD - 美元</option>
+                                        <option value="HKD">HKD - 港币</option>
+                                        <option value="CNY">CNY - 人民币</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t border-gray-200 pt-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">卡片信息</h3>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">卡号</label>
+                                        <input type="text" id="cardNumber" name="cardNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入卡号" value="4761360072118507">
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-1">有效期</label>
+                                            <input type="text" id="expiryDate" name="expiryDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="MMYY" value="0529">
+                                        </div>
+                                        <div>
+                                            <label for="holderName" class="block text-sm font-medium text-gray-700 mb-1">持卡人姓名</label>
+                                            <input type="text" id="holderName" name="holderName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="持卡人姓名" value="Paulette Homenick">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-4">
+                                <button type="submit" id="payBtn" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-md transition-colors duration-200 flex items-center justify-center">
+                                    <i class="fa fa-credit-card mr-2"></i>发起支付
+                                </button>
+                            </div>
+                        </form>
+                        
+                        <div id="result" class="mt-6 hidden">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">支付结果</h3>
+                            <pre id="resultContent" class="bg-gray-100 p-4 rounded-lg overflow-auto text-sm max-h-96"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-[rgb(2,117,221)] py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-sm text-white text-center">© 2026 Evonet Direct API Demo. 保留所有权利。</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const payBtn = document.getElementById('payBtn');
+            payBtn.disabled = true;
+            payBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 处理中...';
+            
+            const merchantTransID = 'PAY-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+            
+            const paymentMethod = {
+                type: 'card',
+                card: {
+                    cardInfo: {
+                        cardNumber: document.getElementById('cardNumber').value,
+                        expiryDate: document.getElementById('expiryDate').value,
+                        holderName: document.getElementById('holderName').value
+                    }
+                }
+            };
+            
+            try {
+                const response = await fetch('/api/direct-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        merchantTransID: merchantTransID,
+                        amount: document.getElementById('amount').value,
+                        currency: document.getElementById('currency').value,
+                        paymentMethod: paymentMethod
+                    })
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('result').classList.remove('hidden');
+                document.getElementById('resultContent').textContent = JSON.stringify(data, null, 2);
+                
+                if (data.success && data.result) {
+                    const result = data.result;
+                    
+                    if (result.result && result.result.code === 'S0000') {
+                        if (result.payment && result.payment.status === 'captured') {
+                            window.location.href = '/demos/directapi-oneoff/success.html';
+                            return;
+                        }
+                    }
+                    
+                    if (result.action && result.action.threeDSData && result.action.threeDSData.url) {
+                        window.location.href = result.action.threeDSData.url;
+                        return;
+                    }
+                    
+                    if (result.action && result.action.redirectData && result.action.redirectData.url) {
+                        window.location.href = result.action.redirectData.url;
+                        return;
+                    }
+                    
+                    if (result.result && result.result.code !== 'S0000') {
+                        window.location.href = '/demos/directapi-oneoff/error.html';
+                        return;
+                    }
+                }
+                
+                window.location.href = '/demos/directapi-oneoff/error.html';
+            } catch (error) {
+                console.error('Payment error:', error);
+                document.getElementById('result').classList.remove('hidden');
+                document.getElementById('resultContent').textContent = 'Error: ' + error.message;
+                window.location.href = '/demos/directapi-oneoff/error.html';
+            } finally {
+                payBtn.disabled = false;
+                payBtn.innerHTML = '<i class="fa fa-credit-card mr-2"></i> 发起支付';
+            }
+        });
+    </script>
+</body>
+</html>

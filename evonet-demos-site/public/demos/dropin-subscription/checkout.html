@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>确认订阅 - Drop-in Subscription Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'rgb(2, 117, 221)',
+                        secondary: '#10B981',
+                        neutral: '#6B7280',
+                    },
+                },
+            }
+        }
+    </script>
+    <style>.card-shadow {box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);}</style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex flex-col">
+        <header class="bg-[rgb(2,117,221)] border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="http://localhost:8080/" class="text-white text-sm font-medium hover:underline mr-6">Back to Site</a>
+                        <div class="flex-shrink-0 flex items-center">
+                            <i class="fa fa-credit-card text-white text-2xl mr-2"></i>
+                            <span class="text-xl font-bold text-white">Drop-in Subscription</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <a href="https://evonetglobal.com/zh/contact-us/" target="_blank" class="text-sm font-medium text-white hover:underline">联系我们</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">确认您的订阅</h1>
+                    <p class="text-neutral">请填写您的信息并完成订阅</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <div class="bg-white rounded-lg card-shadow p-8 mb-6">
+                            <h2 class="text-xl font-bold text-gray-900 mb-6">已选方案</h2>
+                            <div id="planSummary">
+                                <div class="animate-pulse space-y-4">
+                                    <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-1/2"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-primary/5 rounded-lg p-6">
+                            <h3 class="font-semibold text-gray-900 mb-3">订阅说明</h3>
+                            <ul class="space-y-2 text-sm text-gray-600">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-secondary mr-2 mt-1"></i>
+                                    订阅按月计费，到期自动续费
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-secondary mr-2 mt-1"></i>
+                                    您可以随时取消订阅
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check text-secondary mr-2 mt-1"></i>
+                                    首次支付时请勾选保存卡片以便自动续费
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg card-shadow p-8">
+                        <h2 class="text-xl font-bold text-gray-900 mb-6">客户信息</h2>
+                        <form id="customerForm" class="space-y-4">
+                            <div>
+                                <label for="customerName" class="block text-sm font-medium text-gray-700 mb-1">姓名 *</label>
+                                <input type="text" id="customerName" name="customerName" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    placeholder="请输入您的姓名">
+                            </div>
+                            <div>
+                                <label for="customerEmail" class="block text-sm font-medium text-gray-700 mb-1">邮箱 *</label>
+                                <input type="email" id="customerEmail" name="customerEmail" required
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                                    placeholder="请输入您的邮箱">
+                            </div>
+                            
+                            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                                <label class="flex items-start">
+                                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required
+                                        class="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                                    <span class="ml-3 text-sm text-gray-600">
+                                        我已阅读并同意 <a href="#" class="text-primary hover:underline">隐私政策</a> 和 <a href="#" class="text-primary hover:underline">服务条款</a>
+                                    </span>
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-between items-center">
+                    <a href="/demos/dropin-subscription" class="inline-flex items-center text-gray-600 hover:text-primary font-medium">
+                        <i class="fa fa-arrow-left mr-2"></i>
+                        返回重新选择
+                    </a>
+                    <button id="subscribeBtn" disabled
+                        class="bg-primary hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-medium py-3 px-8 rounded-lg transition-colors duration-200 text-lg">
+                        <i class="fa fa-shopping-cart mr-2"></i>
+                        立即订阅
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-[rgb(2,117,221)] py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-sm text-white text-center">© 2026 Drop-in Subscription Demo. 保留所有权利。</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        let selectedPlan = null;
+
+        function loadSelectedPlan() {
+            const planData = sessionStorage.getItem('selectedPlan');
+            if (!planData) {
+                window.location.href = '/demos/dropin-subscription';
+                return;
+            }
+            selectedPlan = JSON.parse(planData);
+            renderPlanSummary();
+        }
+
+        function renderPlanSummary() {
+            const container = document.getElementById('planSummary');
+            container.innerHTML = 
+                '<div class="space-y-4">' +
+                    '<div class="flex justify-between items-center py-3 border-b border-gray-100">' +
+                        '<span class="text-neutral">方案名称</span>' +
+                        '<span class="font-semibold text-gray-900">' + selectedPlan.planName + '</span>' +
+                    '</div>' +
+                    '<div class="flex justify-between items-center py-3 border-b border-gray-100">' +
+                        '<span class="text-neutral">订阅金额</span>' +
+                        '<span class="font-bold text-2xl text-primary">$' + selectedPlan.planPrice + '</span>' +
+                    '</div>' +
+                    '<div class="flex justify-between items-center py-3">' +
+                        '<span class="text-neutral">计费周期</span>' +
+                        '<span class="font-medium text-gray-900">' + (selectedPlan.billingCycle === 'monthly' ? '每月' : '每年') + '</span>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="mt-6">' +
+                    '<h4 class="font-semibold text-gray-900 mb-3">方案包含：</h4>' +
+                    '<ul class="space-y-2">' +
+                        selectedPlan.planFeatures.map(function(feature) {
+                            return '<li class="flex items-center text-sm text-gray-600"><i class="fa fa-check-circle text-secondary mr-3"></i>' + feature + '</li>';
+                        }).join('') +
+                    '</ul>' +
+                '</div>';
+        }
+
+        function updateSubscribeButton() {
+            const customerName = document.getElementById('customerName').value.trim();
+            const customerEmail = document.getElementById('customerEmail').value.trim();
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            
+            const btn = document.getElementById('subscribeBtn');
+            btn.disabled = !selectedPlan || !customerName || !customerEmail || !agreeTerms;
+        }
+
+        document.getElementById('customerName').addEventListener('input', updateSubscribeButton);
+        document.getElementById('customerEmail').addEventListener('input', updateSubscribeButton);
+        document.getElementById('agreeTerms').addEventListener('change', updateSubscribeButton);
+
+        document.getElementById('subscribeBtn').addEventListener('click', async function() {
+            if (!selectedPlan) {
+                alert('请选择一个订阅方案');
+                return;
+            }
+            
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            if (!agreeTerms) {
+                alert('请同意隐私政策和服务条款');
+                return;
+            }
+            
+            const customerInfo = {
+                name: document.getElementById('customerName').value.trim(),
+                email: document.getElementById('customerEmail').value.trim()
+            };
+            
+            const btn = this;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i>处理中...';
+            
+            try {
+                const response = await fetch('/api/subscription/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        planId: selectedPlan.planId,
+                        customerInfo,
+                        agreeTerms
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const subscriptionData = {
+                        subscriptionId: data.subscription.id,
+                        planId: selectedPlan.planId,
+                        planName: selectedPlan.planName,
+                        customerInfo,
+                        sessionId: data.sessionId,
+                        linkUrl: data.paymentUrl
+                    };
+                    sessionStorage.setItem('pendingSubscription', JSON.stringify(subscriptionData));
+                    
+                    window.location.href = '/demos/dropin-subscription/subscription-payment.html?subscriptionId=' + data.subscription.id;
+                } else {
+                    throw new Error(data.error || '创建订阅失败');
+                }
+            } catch (error) {
+                console.error('Subscription error:', error);
+                alert('创建订阅失败: ' + error.message);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa fa-shopping-cart mr-2"></i>立即订阅';
+            }
+        });
+
+        loadSelectedPlan();
+    </script>
+</body>
+</html>

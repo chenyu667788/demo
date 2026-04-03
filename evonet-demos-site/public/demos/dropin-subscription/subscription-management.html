@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>订阅管理 - Drop-in Subscription Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: 'rgb(2, 117, 221)', secondary: '#10B981', neutral: '#6B7280' } } }
+        }
+    </script>
+    <style>.card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }</style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="min-h-screen flex flex-col">
+        <header class="bg-[rgb(2,117,221)] border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <a href="http://localhost:8080/" class="text-white text-sm font-medium hover:underline mr-6">Back to Site</a>
+                        <div class="flex-shrink-0 flex items-center">
+                            <i class="fa fa-credit-card text-white text-2xl mr-2"></i>
+                            <span class="text-xl font-bold text-white">订阅管理</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="flex-grow">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="bg-white rounded-lg card-shadow p-8">
+                    <h1 class="text-2xl font-bold text-gray-900 mb-6">我的订阅</h1>
+                    <div id="subscriptionList" class="space-y-6">
+                        <div class="text-center py-8">
+                            <i class="fa fa-spinner fa-spin text-4xl text-primary"></i>
+                            <p class="mt-4 text-neutral">加载订阅信息中...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-[rgb(2,117,221)] py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-sm text-white text-center">© 2026 Drop-in Subscription Demo. 保留所有权利。</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function formatDate(isoString) {
+            return new Date(isoString).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        async function loadSubscriptions() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const customerId = urlParams.get('customerId');
+            
+            if (!customerId) {
+                document.getElementById('subscriptionList').innerHTML = '<div class="text-center py-8"><p class="text-neutral">请从订阅成功页面进入</p><a href="/demos/dropin-subscription" class="mt-4 inline-block text-primary hover:underline">返回订阅页面</a></div>';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/customer/' + customerId + '/subscriptions');
+                const data = await response.json();
+                
+                if (data.success && data.subscriptions && data.subscriptions.length > 0) {
+                    renderSubscriptions(data.subscriptions, data.hasToken, data.tokenInfo);
+                } else {
+                    document.getElementById('subscriptionList').innerHTML = '<div class="text-center py-8"><p class="text-neutral">暂无订阅记录</p></div>';
+                }
+            } catch (error) {
+                console.error('Failed to load subscriptions:', error);
+                document.getElementById('subscriptionList').innerHTML = '<div class="text-center py-8"><p class="text-red-500">加载失败</p></div>';
+            }
+        }
+
+        function renderSubscriptions(subscriptions, hasToken, tokenInfo) {
+            const html = subscriptions.map(function(sub) {
+                const statusColor = sub.status === 'active' ? 'bg-green-100 text-green-800' : sub.status === 'cancelled' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800';
+                const statusText = sub.status === 'active' ? '已激活' : sub.status === 'cancelled' ? '已取消' : '待支付';
+                
+                return '<div class="border border-gray-200 rounded-lg p-6">' +
+                    '<div class="flex justify-between items-start mb-4">' +
+                        '<div>' +
+                            '<h3 class="text-lg font-semibold text-gray-900">' + sub.plan.name + '</h3>' +
+                            '<p class="text-sm text-neutral">' + sub.plan.description + '</p>' +
+                        '</div>' +
+                        '<span class="px-3 py-1 rounded-full text-xs font-medium ' + statusColor + '">' + statusText + '</span>' +
+                    '</div>' +
+                    '<div class="grid grid-cols-2 gap-4 text-sm">' +
+                        '<div><span class="text-neutral">订阅金额：</span><span class="font-medium text-gray-900">$' + sub.plan.price + '/' + (sub.plan.billingCycle === 'monthly' ? '月' : '年') + '</span></div>' +
+                        '<div><span class="text-neutral">订阅时间：</span><span class="font-medium text-gray-900">' + formatDate(sub.createdAt) + '</span></div>' +
+                        '<div><span class="text-neutral">下次扣款：</span><span class="font-medium text-gray-900">' + formatDate(sub.nextBillingDate) + '</span></div>' +
+                    '</div>' +
+                    (sub.status === 'active' ? '<div class="mt-4 pt-4 border-t border-gray-200"><button onclick="cancelSubscription(\'' + sub.id + '\')" class="text-red-600 hover:text-red-800 text-sm font-medium"><i class="fa fa-times mr-1"></i>取消订阅</button></div>' : '') +
+                '</div>';
+            }).join('');
+            
+            let tokenHtml = '';
+            if (hasToken && tokenInfo) {
+                tokenHtml = '<div class="mt-6 p-4 bg-green-50 rounded-lg">' +
+                    '<div class="flex items-center">' +
+                        '<i class="fa fa-credit-card text-green-600 mr-3"></i>' +
+                        '<div>' +
+                            '<p class="text-sm font-medium text-gray-900">支付方式已保存</p>' +
+                            '<p class="text-xs text-neutral">卡号尾号 ' + tokenInfo.cardLast4 + ' · 添加于 ' + formatDate(tokenInfo.createdAt) + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }
+            
+            document.getElementById('subscriptionList').innerHTML = html + tokenHtml;
+        }
+
+        async function cancelSubscription(subscriptionId) {
+            if (!confirm('确定要取消订阅吗？取消后将不再自动续费。')) return;
+            
+            try {
+                const response = await fetch('/api/subscription/' + subscriptionId + '/cancel', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('订阅已取消');
+                    location.reload();
+                } else {
+                    alert('取消失败: ' + data.error);
+                }
+            } catch (error) {
+                alert('取消失败: ' + error.message);
+            }
+        }
+
+        loadSubscriptions();
+    </script>
+</body>
+</html>
