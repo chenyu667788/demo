@@ -37,7 +37,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="/" class="text-white text-sm font-medium hover:underline mr-6">Back to Site</a>
+                        <a href="http://localhost:8080/" class="text-white text-sm font-medium hover:underline mr-6">Back to Site</a>
                         <div class="flex-shrink-0 flex items-center">
                             <i class="fa fa-credit-card text-white text-2xl mr-2"></i>
                             <span class="text-xl font-bold text-white">Direct API Subscription</span>
@@ -59,7 +59,7 @@
                             
                             <div class="space-y-6">
                                 <div class="bg-white rounded-lg p-6 shadow-sm">
-                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">已选方�?/h3>
+                                    <h3 class="text-lg font-semibold text-gray-900 mb-4">已选方案</h3>
                                     <div id="planInfo" class="space-y-3">
                                         <div class="animate-pulse space-y-3">
                                             <div class="h-4 bg-gray-200 rounded w-3/4"></div>
@@ -81,7 +81,7 @@
                         </div>
                         
                         <div class="bg-white p-8 flex flex-col">
-                            <h2 class="text-2xl font-bold text-gray-900 mb-6">客户信息与支�?/h2>
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6">客户信息与支付</h2>
                             
                             <form id="checkoutForm" class="flex-grow flex flex-col">
                                 <div class="flex-grow space-y-6">
@@ -91,21 +91,21 @@
                                             <div class="grid grid-cols-2 gap-4">
                                                 <div>
                                                     <label for="customerName" class="block text-sm font-medium text-gray-700 mb-1">姓名 *</label>
-                                                    <input type="text" id="customerName" name="customerName" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的姓�?>
+                                                    <input type="text" id="customerName" name="customerName" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的姓名">
                                                 </div>
                                                 <div>
                                                     <label for="customerEmail" class="block text-sm font-medium text-gray-700 mb-1">邮箱 *</label>
-                                                    <input type="email" id="customerEmail" name="customerEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的邮�?>
+                                                    <input type="email" id="customerEmail" name="customerEmail" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的邮箱">
                                                 </div>
                                             </div>
                                             <div>
                                                 <label for="customerPhone" class="block text-sm font-medium text-gray-700 mb-1">手机号码</label>
-                                                <input type="tel" id="customerPhone" name="customerPhone" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的手机号�?>
+                                                <input type="tel" id="customerPhone" name="customerPhone" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入您的手机号码">
                                             </div>
                                             <div class="p-4 bg-gray-50 rounded-lg">
                                                 <label class="flex items-start">
                                                     <input type="checkbox" id="agreeTerms" name="agreeTerms" required class="mt-1 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
-                                                    <span class="ml-3 text-sm text-gray-600">我已阅读并同�?<a href="#" class="text-primary hover:underline">隐私政策</a> �?<a href="#" class="text-primary hover:underline">服务条款</a></span>
+                                                    <span class="ml-3 text-sm text-gray-600">我已阅读并同意 <a href="#" class="text-primary hover:underline">隐私政策</a> 和 <a href="#" class="text-primary hover:underline">服务条款</a></span>
                                                 </label>
                                             </div>
                                         </div>
@@ -117,20 +117,20 @@
                                             <div class="border border-gray-300 rounded-md p-4">
                                                 <div class="flex items-center">
                                                     <input type="radio" id="payment-card" name="paymentMethod" value="card" class="h-4 w-4 text-primary focus:ring-primary" checked>
-                                                    <label for="payment-card" class="ml-2 block text-sm font-medium text-gray-900">银行�?/label>
+                                                    <label for="payment-card" class="ml-2 block text-sm font-medium text-gray-900">银行卡</label>
                                                 </div>
                                                 <div id="card-details" class="mt-4 space-y-3">
                                                     <div>
                                                         <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">卡号</label>
-                                                        <input type="text" id="cardNumber" name="cardNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入卡�? value="4761360072118507">
+                                                        <input type="text" id="cardNumber" name="cardNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入卡号" value="4761360072118507">
                                                     </div>
                                                     <div class="grid grid-cols-2 gap-4">
                                                         <div>
-                                                            <label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-1">有效�?/label>
+                                                            <label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-1">有效期</label>
                                                             <input type="text" id="expiryDate" name="expiryDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="MMYY" value="0529">
                                                         </div>
                                                         <div>
-                                                            <label for="holderName" class="block text-sm font-medium text-gray-700 mb-1">持卡人姓�?/label>
+                                                            <label for="holderName" class="block text-sm font-medium text-gray-700 mb-1">持卡人姓名</label>
                                                             <input type="text" id="holderName" name="holderName" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="请输入持卡人姓名" value="Paulette Homenick">
                                                         </div>
                                                     </div>
@@ -168,7 +168,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="mb-4 md:mb-0">
-                        <p class="text-sm text-white">© 2026 Direct API Subscription Demo. 保留所有权利�?/p>
+                        <p class="text-sm text-white">© 2026 Direct API Subscription Demo. 保留所有权利。</p>
                     </div>
                 </div>
             </div>
@@ -223,7 +223,7 @@
             document.getElementById('planDetails').innerHTML = `
                 <div>
                     <p class="text-gray-600 mb-4">${selectedPlan.description}</p>
-                    <h4 class="font-semibold text-gray-900 mb-3">方案包含�?/h4>
+                    <h4 class="font-semibold text-gray-900 mb-3">方案包含：</h4>
                     <ul class="space-y-2">
                         ${selectedPlan.features.map(feature => `
                             <li class="flex items-center text-sm text-gray-600">
@@ -254,7 +254,7 @@
             
             const payBtn = document.getElementById('payBtn');
             payBtn.disabled = true;
-            payBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 处理�?..';
+            payBtn.innerHTML = '<i class="fa fa-spinner fa-spin mr-2"></i> 处理中...';
             
             try {
                 const customerInfo = {

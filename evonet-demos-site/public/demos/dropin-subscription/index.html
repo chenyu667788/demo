@@ -33,7 +33,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="/" class="text-white text-sm font-medium hover:underline mr-6">Back to Site</a>
+                        <a href="http://localhost:8080/" class="text-white text-sm font-medium hover:underline mr-6">Back to Site</a>
                         <div class="flex-shrink-0 flex items-center">
                             <i class="fa fa-credit-card text-white text-2xl mr-2"></i>
                             <span class="text-xl font-bold text-white">Drop-in Subscription</span>
@@ -50,13 +50,13 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div class="text-center mb-12">
                     <h1 class="text-4xl font-bold text-gray-900 mb-4">选择您的订阅方案</h1>
-                    <p class="text-xl text-neutral">灵活的定价方案，满足不同需�?/p>
+                    <p class="text-xl text-neutral">灵活的定价方案，满足不同需求</p>
                 </div>
 
                 <div id="plansContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                     <div class="text-center py-12">
                         <i class="fa fa-spinner fa-spin text-4xl text-primary"></i>
-                        <p class="mt-4 text-neutral">加载订阅方案�?..</p>
+                        <p class="mt-4 text-neutral">加载订阅方案中...</p>
                     </div>
                 </div>
             </div>
@@ -66,7 +66,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row justify-between items-center">
                     <div class="mb-4 md:mb-0">
-                        <p class="text-sm text-white">© 2026 Drop-in Subscription Demo. 保留所有权利�?/p>
+                        <p class="text-sm text-white">© 2026 Drop-in Subscription Demo. 保留所有权利。</p>
                     </div>
                 </div>
             </div>
@@ -98,14 +98,14 @@
             const container = document.getElementById('plansContainer');
             container.innerHTML = plans.map(function(plan) {
                 return '<div class="plan-card bg-white rounded-lg card-shadow p-8 relative ' + (plan.popular ? 'border-2 border-[rgb(74,218,252)]' : 'border border-gray-200') + '">' +
-                    (plan.popular ? '<div class="absolute top-0 right-0 bg-[rgb(74,218,252)] text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">最受欢�?/div>' : '') +
+                    (plan.popular ? '<div class="absolute top-0 right-0 bg-[rgb(74,218,252)] text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">最受欢迎</div>' : '') +
                     '<div class="text-center mb-6">' +
                         '<h3 class="text-2xl font-bold text-gray-900 mb-2">' + plan.name + '</h3>' +
                         '<p class="text-sm text-neutral">' + plan.description + '</p>' +
                     '</div>' +
                     '<div class="text-center mb-6">' +
                         '<span class="text-4xl font-bold text-gray-900">$' + plan.price + '</span>' +
-                        '<span class="text-neutral">/' + (plan.billingCycle === 'monthly' ? '�? : '�?) + '</span>' +
+                        '<span class="text-neutral">/' + (plan.billingCycle === 'monthly' ? '月' : '年') + '</span>' +
                     '</div>' +
                     '<ul class="space-y-3 mb-8">' +
                         plan.features.map(function(feature) {
@@ -115,7 +115,7 @@
                         }).join('') +
                     '</ul>' +
                     '<button onclick="selectPlan(\'' + plan.id + '\')" class="w-full py-3 rounded-lg font-medium transition-colors duration-200 bg-primary text-white hover:bg-primary/90">' +
-                        '选择此方�? +
+                        '选择此方案' +
                     '</button>' +
                 '</div>';
             }).join('');

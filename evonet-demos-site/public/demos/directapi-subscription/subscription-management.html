@@ -29,7 +29,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between h-16">
                     <div class="flex items-center">
-                        <a href="/" class="text-white text-sm font-medium hover:underline mr-6">Back to Site</a>
+                        <a href="http://localhost:8080/" class="text-white text-sm font-medium hover:underline mr-6">Back to Site</a>
                         <div class="flex-shrink-0 flex items-center">
                             <i class="fa fa-credit-card text-white text-2xl mr-2"></i>
                             <span class="text-xl font-bold text-white">订阅管理</span>
@@ -47,7 +47,7 @@
                     <div id="subscriptionList" class="space-y-6">
                         <div class="text-center py-8">
                             <i class="fa fa-spinner fa-spin text-4xl text-primary"></i>
-                            <p class="mt-4 text-neutral">加载订阅信息�?..</p>
+                            <p class="mt-4 text-neutral">加载订阅信息中...</p>
                         </div>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
 
         <footer class="bg-[rgb(2,117,221)] py-8">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <p class="text-sm text-white text-center">© 2026 Direct API Subscription Demo. 保留所有权利�?/p>
+                <p class="text-sm text-white text-center">© 2026 Direct API Subscription Demo. 保留所有权利。</p>
             </div>
         </footer>
     </div>
@@ -100,8 +100,8 @@
                 const statusColor = sub.status === 'active' ? 'bg-green-100 text-green-800' : 
                                    sub.status === 'cancelled' ? 'bg-red-100 text-red-800' : 
                                    'bg-yellow-100 text-yellow-800';
-                const statusText = sub.status === 'active' ? '已激�? : 
-                                  sub.status === 'cancelled' ? '已取�? : '待支�?;
+                const statusText = sub.status === 'active' ? '已激活' : 
+                                  sub.status === 'cancelled' ? '已取消' : '待支付';
                 
                 return '<div class="border border-gray-200 rounded-lg p-6">' +
                     '<div class="flex justify-between items-start mb-4">' +
@@ -112,9 +112,9 @@
                         '<span class="px-3 py-1 rounded-full text-xs font-medium ' + statusColor + '">' + statusText + '</span>' +
                     '</div>' +
                     '<div class="grid grid-cols-2 gap-4 text-sm">' +
-                        '<div><span class="text-neutral">订阅金额�?/span><span class="font-medium text-gray-900">$' + sub.plan.price + '/' + (sub.plan.billingCycle === 'monthly' ? '�? : '�?) + '</span></div>' +
-                        '<div><span class="text-neutral">订阅时间�?/span><span class="font-medium text-gray-900">' + formatDate(sub.createdAt) + '</span></div>' +
-                        '<div><span class="text-neutral">下次扣款�?/span><span class="font-medium text-gray-900">' + formatDate(sub.nextBillingDate) + '</span></div>' +
+                        '<div><span class="text-neutral">订阅金额：</span><span class="font-medium text-gray-900">$' + sub.plan.price + '/' + (sub.plan.billingCycle === 'monthly' ? '月' : '年') + '</span></div>' +
+                        '<div><span class="text-neutral">订阅时间：</span><span class="font-medium text-gray-900">' + formatDate(sub.createdAt) + '</span></div>' +
+                        '<div><span class="text-neutral">下次扣款：</span><span class="font-medium text-gray-900">' + formatDate(sub.nextBillingDate) + '</span></div>' +
                     '</div>' +
                     (sub.status === 'active' ? '<div class="mt-4 pt-4 border-t border-gray-200"><button onclick="cancelSubscription(\'' + sub.id + '\')" class="text-red-600 hover:text-red-800 text-sm font-medium"><i class="fa fa-times mr-1"></i>取消订阅</button></div>' : '') +
                 '</div>';
@@ -126,8 +126,8 @@
                     '<div class="flex items-center">' +
                         '<i class="fa fa-credit-card text-green-600 mr-3"></i>' +
                         '<div>' +
-                            '<p class="text-sm font-medium text-gray-900">支付方式已保�?/p>' +
-                            '<p class="text-xs text-neutral">卡号尾号 ' + tokenInfo.cardLast4 + ' · 添加�?' + formatDate(tokenInfo.createdAt) + '</p>' +
+                            '<p class="text-sm font-medium text-gray-900">支付方式已保存</p>' +
+                            '<p class="text-xs text-neutral">卡号尾号 ' + tokenInfo.cardLast4 + ' · 添加于 ' + formatDate(tokenInfo.createdAt) + '</p>' +
                         '</div>' +
                     '</div>' +
                 '</div>';
@@ -137,7 +137,7 @@
         }
 
         async function cancelSubscription(subscriptionId) {
-            if (!confirm('确定要取消订阅吗？取消后将不再自动续费�?)) return;
+            if (!confirm('确定要取消订阅吗？取消后将不再自动续费。')) return;
             
             try {
                 const response = await fetch('/api/subscription/' + subscriptionId + '/cancel', {
@@ -146,7 +146,7 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('订阅已取�?);
+                    alert('订阅已取消');
                     location.reload();
                 } else {
                     alert('取消失败: ' + data.error);
